@@ -31,8 +31,8 @@ const App = () => {
   const [totalParticipantstoday, settotalParticipantstoday] = useState()
   const [totalParticipants, settotalParticipants] = useState()
   const data = [{}]
-  useEffect(() => {
-    axios.get('https://handy-word-production.up.railway.app/api/fetchdata')
+  useEffect(async () => {
+    await axios.get('https://handy-word-production.up.railway.app/api/fetchdata')
       .then(response => {
         data[0] = {
           labels:response.data.FirstName,
@@ -45,7 +45,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
 
-      axios.get('https://handy-word-production.up.railway.app/api/fetchdataabsent')
+    await axios.get('https://handy-word-production.up.railway.app/api/fetchdataabsent')
       .then(response => {
         data[1] = {
           labels:response.data.FirstName,
@@ -58,7 +58,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
 
-      axios.get('https://handy-word-production.up.railway.app/api/fetchdatapresenint')
+      await axios.get('https://handy-word-production.up.railway.app/api/fetchdatapresenint')
       .then(response => {
         data[2] = {
           labels:response.data.FirstName,
@@ -71,7 +71,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
 
-      axios.get('https://handy-word-production.up.railway.app/api/fetchdatatotalparti')
+      await axios.get('https://handy-word-production.up.railway.app/api/fetchdatatotalparti')
       .then(response => {
         settotalParticipantstoday(response.data.count); // Assuming response contains histogramData // Assuming response contains totalParticipants
       })
@@ -79,7 +79,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
       
-      axios.get('https://handy-word-production.up.railway.app/api/gettotalparticipants')
+      await axios.get('https://handy-word-production.up.railway.app/api/gettotalparticipants')
       .then(response =>{
         settotalParticipants(response.data.count)
       })
