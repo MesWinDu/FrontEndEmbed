@@ -12,7 +12,7 @@ import axios from 'axios';
 //     values: [5, 15, 25, 20]
 //   }
 // ];
-// axios.get('http://localhost:3000/fetchdata')
+// axios.get('https://main--benevolent-selkie-c0292b.netlify.app//fetchdata')
 //   .then(response => {
 //     console.log(response.data);
 //     const histogramData = [
@@ -32,7 +32,7 @@ const App = () => {
   const [totalParticipants, settotalParticipants] = useState()
   const data = [{}]
   useEffect(() => {
-    axios.get('http://localhost:3000/fetchdata')
+    axios.get('https://main--benevolent-selkie-c0292b.netlify.app/fetchdata')
       .then(response => {
         data[0] = {
           labels:response.data.FirstName,
@@ -45,7 +45,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
 
-      axios.get('http://localhost:3000/fetchdataabsent')
+      axios.get('https://main--benevolent-selkie-c0292b.netlify.app//fetchdataabsent')
       .then(response => {
         data[1] = {
           labels:response.data.FirstName,
@@ -58,7 +58,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
 
-      axios.get('http://localhost:3000/fetchdatapresenint')
+      axios.get('https://main--benevolent-selkie-c0292b.netlify.app//fetchdatapresenint')
       .then(response => {
         data[2] = {
           labels:response.data.FirstName,
@@ -71,7 +71,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
 
-      axios.get('http://localhost:3000/fetchdatatotalparti')
+      axios.get('https://main--benevolent-selkie-c0292b.netlify.app//fetchdatatotalparti')
       .then(response => {
         settotalParticipantstoday(response.data.count); // Assuming response contains histogramData // Assuming response contains totalParticipants
       })
@@ -79,7 +79,7 @@ const App = () => {
         console.error('Error fetching data:', error);
       });
       
-      axios.get('http://localhost:3000/gettotalparticipants')
+      axios.get('https://main--benevolent-selkie-c0292b.netlify.app//gettotalparticipants')
       .then(response =>{
         settotalParticipants(response.data.count)
       })
