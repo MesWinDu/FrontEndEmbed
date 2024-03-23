@@ -2,95 +2,65 @@ import React, { useState, useEffect } from 'react';
 import HistogramGraph from './HistogramGraph';
 import axios from 'axios';
 
-// const histogramData = [
-//   {
-//     labels: ['Category 1', 'Category 2', 'Category 3', 'Category 4'],
-//     values: [10, 20, 15, 30]
-//   },
-//   {
-//     labels: ['Category A', 'Category B', 'Category C', 'Category D'],
-//     values: [5, 15, 25, 20]
-//   }
-// ];
-// axios.get('https://main--benevolent-selkie-c0292b.netlify.app//fetchdata')
-//   .then(response => {
-//     console.log(response.data);
-//     const histogramData = [
-//       {labels:response.data.FirstName,
-//       values:response.data.Total}
-//     ]
-//   })
-//   .catch(error => {
-//     console.error('Error fetching data:', error);
-//   });
-
-
 const App = () => {
-  const titles = ["TotalLate","TotalAbsent","PresentPeriod"]
+  const titles = ["TotalLate", "TotalAbsent", "PresentPeriod"];
   const [histogramData, setHistogramData] = useState([]);
-  const [totalParticipantstoday, settotalParticipantstoday] = useState()
-  const [totalParticipants, settotalParticipants] = useState()
-  const data = [{}]
-  useEffect(async () => {
-    await axios.get('https://handy-word-production.up.railway.app/api/fetchdata')
-      .then(response => {
-        data[0] = {
-          labels:response.data.FirstName,
-          values:response.data.Total
+  const [totalParticipantstoday, setTotalParticipantstoday] = useState();
+  const [totalParticipants, setTotalParticipants] = useState();
+  const data = [{}, {}, {}]; // Initialize data array with empty objects
+
+  useEffect(() => {
+    const fetchDataFromBackend = async (url, dataIndex) => {
+      try {
+        const response = await axios.get(url);
+        data[dataIndex] = {
+          labels: response.data.FirstName,
+          values: response.data.Total
         };
-        console.log(data)
-        setHistogramData(data); // Assuming response contains histogramData // Assuming response contains totalParticipants
+        setHistogramData([...data]); // Update histogramData with new data
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    const fetchDataWithTimeout = async (url, dataIndex, timeout) => {
+      try {
+        await Promise.race([
+          fetchDataFromBackend(url, dataIndex),
+          new Promise((resolve) => setTimeout(resolve, timeout))
+        ]);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    // Fetch data from backend with timeout
+    fetchDataWithTimeout('https://handy-word-production.up.railway.app/api/fetchdata', 0, 10000);
+    fetchDataWithTimeout('https://handy-word-production.up.railway.app/api/fetchdataabsent', 1, 10000);
+    fetchDataWithTimeout('https://handy-word-production.up.railway.app/api/fetchdatapresenint', 2, 10000);
+
+    // Fetch total participants today
+    axios.get('https://handy-word-production.up.railway.app/api/fetchdatatotalparti')
+      .then(response => {
+        setTotalParticipantstoday(response.data.result); // Set total participants today
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching total participants today:', error);
       });
 
-    await axios.get('https://handy-word-production.up.railway.app/api/fetchdataabsent')
+    // Fetch total participants
+    axios.get('https://handy-word-production.up.railway.app/api/gettotalparticipants')
       .then(response => {
-        data[1] = {
-          labels:response.data.FirstName,
-          values:response.data.Total
-        };
-        console.log(data)
-        setHistogramData(data); // Assuming response contains histogramData // Assuming response contains totalParticipants
+        setTotalParticipants(response.data.result); // Set total participants
       })
       .catch(error => {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching total participants:', error);
       });
+  }, []);
 
-      await axios.get('https://handy-word-production.up.railway.app/api/fetchdatapresenint')
-      .then(response => {
-        data[2] = {
-          labels:response.data.FirstName,
-          values:response.data.Total
-        };
-        console.log(data)
-        setHistogramData(data); // Assuming response contains histogramData // Assuming response contains totalParticipants
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-
-      await axios.get('https://handy-word-production.up.railway.app/api/fetchdatatotalparti')
-      .then(response => {
-        settotalParticipantstoday(response.data.count); // Assuming response contains histogramData // Assuming response contains totalParticipants
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-      
-      await axios.get('https://handy-word-production.up.railway.app/api/gettotalparticipants')
-      .then(response =>{
-        settotalParticipants(response.data.count)
-      })
-      .catch(error =>{
-        console.error('Error fetching data:', error);
-      })
-  }
-  , []);
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}>Participant detials</h1>
+      <h1 style={{ textAlign: 'center' }}>Participant details</h1>
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         {histogramData.map((data, index) => (
           <div key={index} style={{ width: '60%', minWidth: '400px' }}>
@@ -102,6 +72,6 @@ const App = () => {
       <p style={{ textAlign: 'center' }}>Total Participants: {totalParticipants}</p>
     </div>
   );
-}
+};
 
 export default App;
