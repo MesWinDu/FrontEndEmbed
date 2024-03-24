@@ -1,18 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import Chart from 'chart.js/auto';
 
-const HistogramGraph = ({ data, title }) => {
+const Newgraph = ({ data, title }) => {
   const chartRef = useRef();
+  let chart = null;
 
-  useEffect(() => {
+  // Create chart when component mounts
+  React.useEffect(() => {
     const ctx = chartRef.current.getContext('2d');
-    const chart = new Chart(ctx, {
+    chart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: data.names,
         datasets: [{
           label: title,
-          data: data.totallate,
+          data: data.total,
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgba(75, 192, 192, 1)',
           borderWidth: 1
@@ -55,12 +57,17 @@ const HistogramGraph = ({ data, title }) => {
             display: false
           }
         },
-        barPercentage: 1,
-        categoryPercentage: 1
+        barPercentage: 0.8,
+        categoryPercentage: 0.8
       }
     });
 
-    return () => chart.destroy();
+    // Return cleanup function to destroy the chart when component unmounts
+    return () => {
+      if (chart) {
+        chart.destroy();
+      }
+    };
   }, [data, title]);
 
   return (
@@ -71,4 +78,4 @@ const HistogramGraph = ({ data, title }) => {
   );
 };
 
-export default HistogramGraph;
+export default Newgraph;
