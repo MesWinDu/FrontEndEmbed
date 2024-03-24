@@ -25,7 +25,11 @@ const HistogramGraph = ({ data, title }) => {
             labels: data.labels
           },
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            stepSize: 1 // Set step size to 1 to force integer ticks
+            ,ticks: {
+              precision: 0
+            }
           }
         },
         layout: {
